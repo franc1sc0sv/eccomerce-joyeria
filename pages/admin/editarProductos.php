@@ -9,16 +9,15 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 
     // Consulta para obtener los datos del producto por su ID
     $sql = "SELECT * FROM productos WHERE id = $id_producto";
-    $result = mysqli_query($conn, $sql);
+    $producto = $conn->consultar($sql)[0];
+    $rowCount = $conn->rowCount($sql);
 
     // Verifica si se encontró el producto
-    if (mysqli_num_rows($result) > 0) {
-        $producto = mysqli_fetch_assoc($result);
-    } else {
-        // Producto no encontrado, redirige a alguna página de manejo de errores
+    if ($rowCount <= 0) {
         header("Location: ./index.php");
         exit();
     }
+
 } else {
     // ID de producto no válido, redirige a alguna página de manejo de errores
     header("Location: ./index.php");
@@ -63,6 +62,11 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             <li class="nav-item active">
                 <a class="nav-link" href="index.php">
                     <span>Productos</span></a>
+            </li>
+
+            <li class="nav-item active">
+                <a class="nav-link" href="ordenes.php">
+                    <span>Ordenes</span></a>
             </li>
             <hr class="sidebar-divider my-0" />
         </ul>

@@ -17,29 +17,37 @@
                 </li>
 
             </ul>
-            <?php if (!$isLoged) { ?>
-                <div>
-                    <a class="btn btn-outline-dark" href="/pages/login.php">
-                        Iniciar Sesion
-                    </a>
-                    <a class="btn btn-outline-dark" href="/pages/register.php">
-                        Registrarse
-                    </a>
-                </div>
-            <?php } ?>
+            <div class="icons" style="display: flex;gap: 1rem;">
+                <a style="text-decoration: none;color: black;" href="/pages/client/cart.php"
+                    class="icons-btn d-inline-block bag">
+                    <img style="height:28px" src="/assets/images/shopping-cart.png" alt="">
+                    <span id="amount_shopping" class="number">0</span>
+                </a>
+                <?php if (!$isLoged) { ?>
+                    <div>
+                        <a class="btn btn-outline-dark" href="/pages/login.php">
+                            Iniciar Sesion
+                        </a>
+                        <a class="btn btn-outline-dark" href="/pages/register.php">
+                            Registrarse
+                        </a>
+                    </div>
+                <?php } ?>
 
-            <?php if ($isLoged) { ?>
-                <div style="display: flex;gap: 12px;align-items: center;">
+                <?php if ($isLoged) { ?>
+                    <div style="display: flex;gap: 12px;align-items: center;">
 
-                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">
-                        <?php echo $_SESSION['name'] ?>
-                    </span>
-                    <a class="btn btn-outline-dark" href="/controllers/logout.php">
-                        Cerrar Sesion
-                    </a>
-                </div>
+                        <span style="font-size: large;font-weight: bold;"
+                            class="mr-2 d-none d-lg-inline text-gray-600 small">
+                            <?php echo $_SESSION['name'] ?>
+                        </span>
+                        <a class="btn btn-outline-dark" href="/controllers/logout.php">
+                            Cerrar Sesion
+                        </a>
+                    </div>
 
-            <?php } ?>
+                <?php } ?>
+            </div>
 
         </div>
     </div>

@@ -2,9 +2,10 @@
 include_once('./validaciones.php');
 include_once('../../controllers/config/conexion.php');
 
-
 $sql = "SELECT * FROM productos";
-$result = mysqli_query($conn, $sql);
+
+$rowCount = $data = $conn->rowCount($sql);
+$data = $conn->consultar($sql);
 
 ?>
 
@@ -29,7 +30,6 @@ $result = mysqli_query($conn, $sql);
 
   <link href="css/sb-admin-2.min.css" rel="stylesheet" />
 
-  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/js/bootstrap.bundle.min.js"></script> -->
 </head>
 
 <body id="page-top">
@@ -44,6 +44,11 @@ $result = mysqli_query($conn, $sql);
       <li class="nav-item active">
         <a class="nav-link" href="index.php">
           <span>Productos</span></a>
+      </li>
+
+      <li class="nav-item active">
+        <a class="nav-link" href="ordenes.php">
+          <span>Ordenes</span></a>
       </li>
       <hr class="sidebar-divider my-0" />
     </ul>
@@ -88,8 +93,8 @@ $result = mysqli_query($conn, $sql);
             </thead>
             <tbody>
               <?php
-              if (mysqli_num_rows($result) > 0) {
-                while ($row = mysqli_fetch_assoc($result)) {
+              if ($rowCount > 0) {
+                foreach ($data as $row) {
                   echo '<tr>';
                   echo '<td>' . $row['id'] . '</td>';
                   echo '<td>' . $row['nombre'] . '</td>';
@@ -102,7 +107,9 @@ $result = mysqli_query($conn, $sql);
                   echo '</td>';
                   echo '</tr>';
                 }
-              } else {
+              }
+
+              if ($rowCount == 0) {
                 echo '<tr><td colspan="7">No hay productos disponibles</td></tr>';
               }
               ?>
@@ -116,7 +123,6 @@ $result = mysqli_query($conn, $sql);
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 
   <script>
     $(document).ready(function () {

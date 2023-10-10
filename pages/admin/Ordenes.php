@@ -1,13 +1,19 @@
 <?php
+
 include_once('./validaciones.php');
 include_once('../../controllers/config/conexion.php');
 
+$sql = "SELECT * FROM pedidos";
+$orders = $conn->consultar($sql);
 
-$sql = "SELECT * FROM pay_credentials";
-$result = mysqli_query($conn, $sql);
+$productos = [];
+
+foreach ($orders as $order) {
+    $productos[] = json_decode($order["productos"]);
+}
+
 
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -19,23 +25,25 @@ $result = mysqli_query($conn, $sql);
     <meta name="description" content="" />
     <meta name="author" content="" />
 
-    <title>Romu's Admin</title>
+    <title>Joyeria ADMIN</title>
 
     <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css" />
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet" />
 
+
     <link href="css/sb-admin-2.min.css" rel="stylesheet" />
 
 </head>
 
-<body id="page-top">
+
+<body>
 
     <div id="wrapper">
-        <ul style="background-color: #1c1c1c;" class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
+        <ul style="background-color: #212529" class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar">
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
-                <div class="sidebar-brand-text mx-3">Romu's Luxe</div>
+                <div class="sidebar-brand-text mx-3">Joyeria Online</div>
             </a>
             <hr class="sidebar-divider my-0" />
 
@@ -45,7 +53,7 @@ $result = mysqli_query($conn, $sql);
             </li>
 
             <li class="nav-item active">
-                <a class="nav-link" href="Ordenes.php">
+                <a class="nav-link" href="ordenes.php">
                     <span>Ordenes</span></a>
             </li>
             <hr class="sidebar-divider my-0" />
@@ -76,46 +84,76 @@ $result = mysqli_query($conn, $sql);
                 </nav>
 
                 <div class="container">
-                    <h2>Lista de ordenes</h2>
+                    <h2>Lista de Órdenes</h2>
                     <table class="table">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Email</th>
-                                <th>Numero de cuenta</th>
-                                <th>Pin confirmacion</th>
-                                <th>Fecha de exp</th>
-                                <th>Direccion</th>
+                                <th>Nombre</th>
+                                <th>Dirección</th>
+                                <th>Productos</th> <!-- Nueva columna para mostrar productos -->
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            if (mysqli_num_rows($result) > 0) {
-                                while ($row = mysqli_fetch_assoc($result)) {
-                                    echo '<tr>';
-                                    echo '<td>' . $row['id'] . '</td>';
-                                    echo '<td>' . $row['email'] . '</td>';
-                                    echo '<td>' . $row['numero_cuenta'] . '</td>';
-                                    echo '<td>' . $row['pin_confirmacion'] . '</td>';
-                                    echo '<td>' . $row['exp_date'] . '</td>';
-                                    echo '<td>' . $row['direccion'] . '</td>';
-                                    echo '</td>';
-                                    echo '</tr>';
+                            foreach ($orders as $order) {
+                                $productos = json_decode($order["productos"]);
+
+
+
+                                echo '<tr>';
+                                echo '<td>' . $order['id'] . '</td>';
+                                echo '<td>' . $order['nombre'] . '</td>';
+                                echo '<td>' . $order['direccion'] . '</td>';
+                                echo '<td><ul>';
+                                foreach ($productos as $item) {
+                                    $dato = $conn->consultar("SELECT nombre FROM productos WHERE id = $item->id")[0];
+                                    echo "<li>" . $dato['nombre'] . " - " . $item->cantidad . "</li>";
                                 }
-                            } else {
-                                echo '<tr><td colspan="7">No hay ordenes disponibles</td></tr>';
+                                echo '</ul></td>';
+                                echo '<td><button class="btn btn-danger" onclick="deleteOrder(' . $order['id'] . ')">Eliminar Orden</button></td>';
+                                echo '</tr>';
                             }
                             ?>
                         </tbody>
                     </table>
                 </div>
+
             </div>
         </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        <script>
+
+            function deleteOrder(orderId) {
+                Swal.fire({
+                    title: 'Eliminar Orden',
+                    text: '¿Estás seguro de que deseas eliminar esta orden?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sí, eliminar'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        await fetch(`/controllers/eliminarOrden.php?id=${orderId}`)
+                        Swal.fire({
+                            title: 'Orden Eliminada',
+                            text: 'La orden ha sido eliminada correctamente.',
+                            icon: 'succes',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'ok'
+                        }).then(async (result) => {
+                            location.reload();
+                        })
+                    }
+                });
+            }
+        </script>
 
 </body>
 

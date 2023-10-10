@@ -38,6 +38,11 @@ include_once('./validaciones.php');
         <a class="nav-link" href="index.php">
           <span>Productos</span></a>
       </li>
+
+      <li class="nav-item active">
+        <a class="nav-link" href="ordenes.php">
+          <span>Ordenes</span></a>
+      </li>
       <hr class="sidebar-divider my-0" />
     </ul>
 

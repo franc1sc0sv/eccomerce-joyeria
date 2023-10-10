@@ -1,9 +1,5 @@
 <?php
-include "./config/conexion.php";
-$librerias = '
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css"></link>  
-';
+include_once("./helpers/includes.php");
 
 function validarContrasena($contrasena)
 {
@@ -17,54 +13,33 @@ function validarContrasena($contrasena)
     }
 }
 
-
-function mostrarMensaje($titulo, $mensaje, $tipo, $redireccionar = "/pages/register.php")
-{
-    global $librerias;
-    echo '
-        <html>
-            <head>
-                ' . $librerias . '
-            </head>
-            <body>
-                <script language="javascript">
-                    swal("' . $titulo . '", "' . $mensaje . '", "' . $tipo . '").then(function() {
-                        window.location.href = " ' . $redireccionar . '";
-                    });
-                </script>
-            </body>
-        </html>';
-    exit;
-}
-
 if (!empty($_POST["nombre"]) && !empty($_POST["email"]) && !empty($_POST["password"])) {
     $nombre = $_POST["nombre"];
     $email = $_POST["email"];
     $contra = $_POST["password"];
 
+
     if (!validarContrasena($contra)) {
-        mostrarMensaje("Error", "La contraseña debe de tener numeros, una mayuscula, minimmo un caracter especial y mas de ocho caracteres", "error");
+        mostrarMensaje("Error", "La contraseña debe de tener numeros, una mayuscula y mas de ocho caracteres", "error", "/pages/register.php");
         exit;
     }
 
-    // Verificamos si el correo ya está registrado 
-    $checkEmailQuery = "SELECT * FROM `usuarios` WHERE `email` = '$email'";
-    $resultado = mysqli_query($conn, $checkEmailQuery);
-    if ($resultado && mysqli_num_rows($resultado) == 1) {
-        // Error en el registro, muestra una alerta y redirige al formulario de registro
-        mostrarMensaje("Error", "Este correo ya está registrado, utiliza otro correo", "error");
+    $sqlEmail = "SELECT * FROM `usuarios` WHERE `email` = '$email'";
+    $rowCountEmail = $conn->rowCount($sqlEmail);
+
+    if ($rowCountEmail > 0) {
+        mostrarMensaje("Error", "Este correo ya está registrado, utiliza otro correo", "error", "/pages/register.php");
+        exit;
     }
 
-    // Insertamos los datos del nuevo usuario en la tabla de usuarios
     $sql = "INSERT INTO `usuarios`(`id`, `nombre`, `email`, `password`, `id_rol`) VALUES (NULL,'$nombre', '$email', '$contra', 2)";
 
-    if (mysqli_query($conn, $sql)) {
+    if ($conn->ejecutar($sql)) {
         mostrarMensaje("Éxito", "Formulario enviado con éxito", "success", "/pages/login.php");
     } else {
-        mostrarMensaje("Error", "Error al enviar el formulario", "error");
+        mostrarMensaje("Error", "Error al enviar el formulario", "error", "/pages/register.php");
     }
 } else {
-    // Algunos campos están vacíos, muestra una alerta y redirige al formulario de registro
-    mostrarMensaje("Error", "Los campos están vacíos", "error");
+    mostrarMensaje("Error", "Los campos están vacíos", "error", "/pages/register.php");
 }
 ?>

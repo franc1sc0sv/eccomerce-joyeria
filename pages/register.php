@@ -29,7 +29,7 @@
 
     <div class="form_container">
         <h2 class="text-center mb-4">Registro</h2>
-        <form method="post" action="../controllers/register.php">
+        <form method="post" action="/controllers/register.php">
             <div class="form-group">
                 <label for="nombre">Nombre:</label>
                 <input name="nombre" type="text" class="form-control" id="nombre" placeholder="Ingrese su nombre">

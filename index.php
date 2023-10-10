@@ -3,7 +3,7 @@
 include_once("./controllers/config/conexion.php");
 
 $consulta = "SELECT * FROM productos ORDER BY id DESC LIMIT 2";
-$resultado = mysqli_query($conn, $consulta);
+$datos = $conn->consultar($consulta);
 ?>
 
 <!DOCTYPE html>
@@ -22,14 +22,8 @@ $resultado = mysqli_query($conn, $consulta);
             <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4">
 
                 <?php
-
-                // Verificar si se obtuvieron resultados
-                if ($resultado && mysqli_num_rows($resultado) > 0) {
-                    while ($fila = mysqli_fetch_assoc($resultado)) {
-                        include("includes/item.php");
-                    }
-                } else {
-                    echo "No se encontraron productos.";
+                foreach ($datos as $fila) {
+                    include("includes/item.php");
                 }
                 ?>
                 <a class="col mb-5" href="/pages/client/tienda.php" style="text-decoration: none;">
