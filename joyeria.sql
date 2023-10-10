@@ -18,7 +18,7 @@ CREATE TABLE `usuarios` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `password` varchar(100) NOT NULL,
   `id_rol` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_rol` (`id_rol`),

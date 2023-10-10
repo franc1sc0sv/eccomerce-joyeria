@@ -33,6 +33,8 @@
             </tbody>
           </table>
         </div>
+        <p id="message"></p>
+
       </form>
       <div class="col-md-6 pl-5">
         <div class="row justify-content-end">
@@ -69,7 +71,6 @@
           </div>
         </div>
       </div>
-      <p id="message"></p>
     </div>
 
   </div>
